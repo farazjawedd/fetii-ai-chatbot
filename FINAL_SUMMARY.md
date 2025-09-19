@@ -18,7 +18,7 @@
 1. Create GitHub repository
 2. Push this code: `git push -u origin main`
 3. Deploy on [share.streamlit.io](https://share.streamlit.io)
-4. Set environment variable: `GEMINI_API_KEY = AIzaSyDLB8NYTk_pSpWWXIgpEhXt-hoHTfVrC3E`
+4. Set environment variable: `GEMINI_API_KEY = YOUR_GEMINI_API_KEY_HERE`
 5. **DONE!** Your chatbot is live and ready to demo
 
 ### **Option 2: Local Demo**

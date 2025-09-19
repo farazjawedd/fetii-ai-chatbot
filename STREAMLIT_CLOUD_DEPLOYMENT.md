@@ -32,7 +32,7 @@ https://your-app-name.streamlit.app
 Click "Advanced settings" and add:
 
 ```
-GEMINI_API_KEY = AIzaSyDLB8NYTk_pSpWWXIgpEhXt-hoHTfVrC3E
+GEMINI_API_KEY = YOUR_GEMINI_API_KEY_HERE
 ```
 
 ### 5. **Deploy!**

@@ -21,7 +21,7 @@ git push -u origin main
 3. Click "New app"
 4. Select your repository: `YOUR_USERNAME/fetii-ai-chatbot`
 5. Set main file path: `streamlit_app.py`
-6. Add environment variable: `GEMINI_API_KEY` = `AIzaSyDLB8NYTk_pSpWWXIgpEhXt-hoHTfVrC3E`
+6. Add environment variable: `GEMINI_API_KEY` = `YOUR_GEMINI_API_KEY_HERE`
 7. Click "Deploy"
 
 ### Step 3: Access Your App
@@ -45,7 +45,7 @@ vercel
 
 # Set environment variable
 vercel env add GEMINI_API_KEY
-# Enter: AIzaSyDLB8NYTk_pSpWWXIgpEhXt-hoHTfVrC3E
+# Enter: YOUR_GEMINI_API_KEY_HERE
 ```
 
 ## Option 3: Local Development
@@ -92,7 +92,7 @@ streamlit run streamlit_app.py
 ## 🔧 Environment Variables
 
 For the full GPT experience, set:
-- `GEMINI_API_KEY`: `AIzaSyDLB8NYTk_pSpWWXIgpEhXt-hoHTfVrC3E`
+- `GEMINI_API_KEY`: `YOUR_GEMINI_API_KEY_HERE`
 
 ## 📱 Features
 
