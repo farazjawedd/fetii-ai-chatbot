@@ -36,7 +36,7 @@ class FetiiChatbot:
         else:
             try:
                 genai.configure(api_key=api_key)
-                self.gemini_model = genai.GenerativeModel('gemini-pro')
+                self.gemini_model = genai.GenerativeModel('gemini-2.0-flash-exp')
                 st.success("✅ Gemini AI connected!")
             except Exception as e:
                 st.warning(f"⚠️ Gemini AI setup failed: {str(e)}. Using rule-based responses.")
@@ -68,6 +68,33 @@ class FetiiChatbot:
         
         try:
             # Check for specific query patterns
+            
+            # 0. Specific user queries (age, demographics, etc.)
+            if any(keyword in query_lower for keyword in ['age of user', 'user id', 'userid', 'user']):
+                user_id = self._extract_user_id(user_query)
+                if user_id:
+                    user_data = self.processor.query_data('specific_user', user_id=user_id)
+                    result['query_type'] = 'specific_user'
+                    result['data'] = user_data
+                    
+                    if len(user_data) > 0:
+                        user_info = user_data.iloc[0]
+                        result['summary'] = f"Found information for User ID {user_id}"
+                        result['detailed_response'] = f"""
+                        **User ID {user_id} Information:**
+                        - Age: {user_info.get('Age', 'Not available')}
+                        - Age Group: {user_info.get('Age Group', 'Not available')}
+                        - Total Trips: {len(user_data)}
+                        - Most Recent Trip: {user_info.get('Trip Date and Time', 'Not available')}
+                        - Common Pickup: {user_info.get('Pick Up Category', 'Not available')}
+                        - Common Dropoff: {user_info.get('Drop Off Category', 'Not available')}
+                        """
+                    else:
+                        result['summary'] = f"No data found for User ID {user_id}"
+                        result['detailed_response'] = f"Sorry, I couldn't find any data for User ID {user_id} in the Fetii dataset."
+                else:
+                    result['summary'] = "Could not extract user ID from query"
+                    result['detailed_response'] = "Please provide a specific user ID (e.g., 'age of user 8794')"
             
             # 1. Trips to specific location
             if any(keyword in query_lower for keyword in ['went to', 'go to', 'trips to', 'groups to']):
@@ -285,6 +312,26 @@ class FetiiChatbot:
         
         return 6  # Default to 6+ for large groups
     
+    def _extract_user_id(self, query):
+        """Extract user ID from user query."""
+        import re
+        
+        # Look for patterns like "user 8794", "userid 8794", "user 8794", etc.
+        patterns = [
+            r'user\s+(\d+)',
+            r'userid\s+(\d+)',
+            r'user\s+id\s+(\d+)',
+            r'age\s+of\s+user\s+(\d+)',
+            r'(\d+)'
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, query.lower())
+            if match:
+                return int(match.group(1))
+        
+        return None
+    
     def _create_trip_visualization(self, trips, location):
         """Create visualization for trip data."""
         if len(trips) == 0:
@@ -358,8 +405,12 @@ class FetiiChatbot:
             - Summary: {analysis_result['summary']}
             - Data Available: {analysis_result['data'] is not None}
             
-            Please provide a helpful, conversational response about the Fetii data. Be specific about numbers and insights.
-            If there's data available, mention the key findings. Keep the response concise but informative.
+            IMPORTANT: Use the detailed response below as your base and enhance it with more conversational language and insights. 
+            Don't just repeat the numbers - explain what they mean for Fetii's business.
+            
+            Base Response: {analysis_result['detailed_response']}
+            
+            Please provide a helpful, conversational response that builds on this data. Be specific about numbers and explain their business significance.
             """
             
             response = self.gemini_model.generate_content(context)

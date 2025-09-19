@@ -186,7 +186,14 @@ class FetiiDataProcessor:
         
         df = self.processed_data.copy()
         
-        if query_type == "trips_to_location":
+        if query_type == "specific_user":
+            user_id = kwargs.get('user_id')
+            if user_id:
+                # Filter by specific user ID
+                df = df[df['User ID'] == user_id]
+            return df
+        
+        elif query_type == "trips_to_location":
             location = kwargs.get('location', '').lower()
             time_period = kwargs.get('time_period', 'all')
             
